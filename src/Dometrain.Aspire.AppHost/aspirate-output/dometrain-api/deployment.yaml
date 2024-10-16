@@ -1,0 +1,35 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dometrain-api
+  labels:
+    app: dometrain-api
+spec:
+  minReadySeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dometrain-api
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: dometrain-api
+    spec:
+      containers:
+      - name: dometrain-api
+        image: dometrain-api:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: https
+          containerPort: 8443
+        envFrom:
+        - configMapRef:
+            name: dometrain-api-env
+        - secretRef:
+            name: dometrain-api-secrets
+      terminationGracePeriodSeconds: 180

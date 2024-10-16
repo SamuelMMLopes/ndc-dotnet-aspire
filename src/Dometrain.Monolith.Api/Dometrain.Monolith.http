@@ -1,0 +1,6 @@
+@Dometrain.Monolith_HostAddress = http://localhost:5148
+
+GET {{Dometrain.Monolith_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

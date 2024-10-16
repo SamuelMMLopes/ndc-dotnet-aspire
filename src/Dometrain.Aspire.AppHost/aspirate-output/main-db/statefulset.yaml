@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: main-db
+  labels:
+    app: main-db
+spec:
+  serviceName: "main-db"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: main-db
+  template:
+    metadata:
+      labels:
+        app: main-db
+    spec:
+      containers:
+        - name: main-db
+          image: docker.io/library/postgres:16.4
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: main-db-env
+            - secretRef:
+                name: main-db-secrets
+          volumeMounts:
+            - name: dometrain-aspire-apphost-main-db-data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: dometrain-aspire-apphost-main-db-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
